@@ -1,3 +1,9 @@
+import { AuthPage } from "@/components/AuthPage";
+
 export default function Home() {
-  return <main> </main>;
+  return (
+    <main>
+      <AuthPage />
+    </main>
+  );
 }
