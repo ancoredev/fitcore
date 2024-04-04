@@ -6,8 +6,9 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Divider } from "@/components/ui/divider";
-import { CredentialsForm } from "../components/CredentialsForm";
-import { SocialsForm } from "../components/SocialsForm";
+import { CredentialsForm } from "./components/CredentialsForm";
+import { SocialsForm } from "./components/SocialsForm";
+import Link from "next/link";
 
 const LoginPage = () => {
   return (
@@ -24,9 +25,12 @@ const LoginPage = () => {
         <CardContent>
           <CredentialsForm />
 
-          <a className="w-full block text-center text-sm text-slate-600">
+          <Link
+            className="w-full block text-center text-sm text-slate-600"
+            href="/auth/register"
+          >
             Нет аккаунта? Зарегистрируйтесь
-          </a>
+          </Link>
           <Divider className="bg-slate-200" />
           {/* TODO: Сделать вход через почту */}
 
