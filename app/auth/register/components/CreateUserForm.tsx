@@ -1,36 +1,29 @@
 "use client";
 
 import { useForm } from "react-hook-form";
-import { z } from "zod";
-
+import { useToast } from "@/components/ui/use-toast";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
-
-const formSchema = z.object({
-  username: z.string().min(1, { message: "Введите имя пользователя" }),
-  email: z
-    .string()
-    .min(1, { message: "Введите email" })
-    .email({ message: "Некорректный email" }),
-  password: z
-    .string()
-    .min(1, { message: "Введите пароль" })
-    .min(8, "Слишком короткий пароль"),
-});
+import { z } from "zod";
+import { createUserSchema } from "@/lib/schemas";
+import type { TCreateUserResponse } from "@/lib/types";
 
 const CreateUserForm = () => {
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const router = useRouter();
+  const { toast } = useToast();
+
+  const form = useForm<z.infer<typeof createUserSchema>>({
+    resolver: zodResolver(createUserSchema),
     defaultValues: {
       username: "",
       email: "",
@@ -38,11 +31,36 @@ const CreateUserForm = () => {
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values);
+  async function onSubmit(values: z.infer<typeof createUserSchema>) {
+    const response = await fetch("/api/user", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        username: values.username,
+        email: values.email,
+        password: values.password,
+      }),
+    });
+    const responseJson: TCreateUserResponse = await response.json();
+
+    if (!response.ok) {
+      toast({
+        title: "Упс",
+        description: responseJson.message,
+        variant: "destructive",
+      });
+      return;
+    }
+
+    toast({
+      title: "Аккаунт успешно создан",
+      description: "Войдите, чтобы начать работу",
+    });
+    router.push("/auth/login");
   }
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">
