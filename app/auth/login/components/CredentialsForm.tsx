@@ -2,13 +2,11 @@
 
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -16,24 +14,18 @@ import {
 } from "@/components/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-const formSchema = z.object({
-  email: z
-    .string()
-    .min(1, { message: "Введите email" })
-    .email({ message: "Некорректный email" }),
-  password: z.string().min(1, { message: "Введите пароль" }),
-});
+import { credentialsSchema } from "@/lib/schemas";
 
 export const CredentialsForm = () => {
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof credentialsSchema>>({
+    resolver: zodResolver(credentialsSchema),
     defaultValues: {
       email: "",
       password: "",
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  function onSubmit(values: z.infer<typeof credentialsSchema>) {
     console.log(values);
   }
 

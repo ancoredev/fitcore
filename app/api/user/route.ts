@@ -2,13 +2,13 @@ import { NextResponse } from "next/server";
 import { hash } from "bcrypt" 
 
 import { db } from "@/lib/db";
-import { userSchema } from "@/schemas";
+import { createUserSchema } from "@/lib/schemas";
 
 
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { email, username, password } = userSchema.parse(body);
+    const { email, username, password } = createUserSchema.parse(body);
 
     const isEmailExists = await db.user.findUnique({
       where: {
@@ -25,7 +25,7 @@ export async function POST(req: Request) {
       }
     });
     if (isUsernameExists) {
-      return NextResponse.json({ user: null, message: "Пользователь с таким username уже существует"}, { status: 409 });
+      return NextResponse.json({ user: null, message: "Пользователь с таким именем уже существует"}, { status: 409 });
     }
 
 
