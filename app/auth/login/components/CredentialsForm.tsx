@@ -13,10 +13,14 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { signIn } from "next-auth/react";
 
 import { credentialsSchema } from "@/lib/schemas";
+import { useRouter } from "next/navigation";
+import { hash } from "bcrypt";
 
 export const CredentialsForm = () => {
+  const router = useRouter();
   const form = useForm<z.infer<typeof credentialsSchema>>({
     resolver: zodResolver(credentialsSchema),
     defaultValues: {
@@ -25,8 +29,15 @@ export const CredentialsForm = () => {
     },
   });
 
-  function onSubmit(values: z.infer<typeof credentialsSchema>) {
-    console.log(values);
+  async function onSubmit(values: z.infer<typeof credentialsSchema>) {
+    const signInData = await signIn("credentials", {
+      email: values.email,
+      password: values.password,
+      redirect: false,
+    });
+
+    if (signInData?.error) console.log(signInData);
+    else router.push("/admin");
   }
 
   return (
@@ -52,7 +63,7 @@ export const CredentialsForm = () => {
             <FormItem>
               <FormLabel>Пароль</FormLabel>
               <FormControl>
-                <Input placeholder="********" {...field} />
+                <Input type="password" placeholder="********" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
