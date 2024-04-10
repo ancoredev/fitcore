@@ -13,11 +13,10 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 import { credentialsSchema } from "@/lib/schemas";
-import { useRouter } from "next/navigation";
-import { hash } from "bcrypt";
+import { signIn } from "next-auth/react";
 
 export const CredentialsForm = () => {
   const router = useRouter();
