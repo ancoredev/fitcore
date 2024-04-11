@@ -35,8 +35,10 @@ export const CredentialsForm = () => {
       redirect: false,
     });
 
-    if (signInData?.error) console.log(signInData);
-    else router.push("/admin");
+    if (!signInData?.error) {
+      router.push("/admin");
+      router.refresh();
+    }
   }
 
   return (
