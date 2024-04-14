@@ -5,8 +5,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Divider } from "@/components/ui/divider";
 import { CredentialsForm } from "./components/CredentialsForm";
+import { Separator } from "@/components/ui/separator";
 import { SocialsForm } from "./components/SocialsForm";
 import Link from "next/link";
 
@@ -31,7 +31,7 @@ const LoginPage = () => {
           >
             Нет аккаунта? Зарегистрируйтесь
           </Link>
-          <Divider className="bg-slate-200" />
+          <Separator className="my-6" />
           {/* TODO: Сделать вход через почту */}
 
           <SocialsForm />

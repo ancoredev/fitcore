@@ -17,9 +17,14 @@ import { useRouter } from "next/navigation";
 
 import { credentialsSchema } from "@/lib/schemas";
 import { signIn } from "next-auth/react";
+import { useState } from "react";
+import { ButtonWithLoader } from "@/components/ui/buttonWithLoader";
+import { toast } from "@/components/ui/use-toast";
 
 export const CredentialsForm = () => {
   const router = useRouter();
+  const [isLoading, setLoading] = useState(false);
+
   const form = useForm<z.infer<typeof credentialsSchema>>({
     resolver: zodResolver(credentialsSchema),
     defaultValues: {
@@ -29,16 +34,26 @@ export const CredentialsForm = () => {
   });
 
   async function onSubmit(values: z.infer<typeof credentialsSchema>) {
+    setLoading(true);
     const signInData = await signIn("credentials", {
       email: values.email,
       password: values.password,
       redirect: false,
     });
 
-    if (!signInData?.error) {
-      router.push("/admin");
-      router.refresh();
+    if (!signInData?.ok) {
+      toast({
+        title: "Упс",
+        description: "Неверные данные",
+        variant: "destructive",
+      });
+      setLoading(false);
+      return;
     }
+
+    router.push("/dashboard");
+    router.refresh();
+    setLoading(false);
   }
 
   return (
@@ -70,9 +85,13 @@ export const CredentialsForm = () => {
             </FormItem>
           )}
         />
-        <Button type="submit" className="w-full">
+        <ButtonWithLoader
+          isLoading={isLoading}
+          type="submit"
+          className="w-full"
+        >
           Войти
-        </Button>
+        </ButtonWithLoader>
       </form>
     </Form>
   );

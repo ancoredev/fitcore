@@ -1,8 +1,8 @@
 import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button";
 import { getServerSession } from "next-auth";
-import { SignOutButton } from "../ui/signOutButton";
 import { authOptions } from "@/lib/auth";
+import { UserInfoBox } from "./UserInfoBox";
 
 const Navbar = async () => {
   const session = await getServerSession(authOptions);
@@ -12,11 +12,16 @@ const Navbar = async () => {
       <div className="container flex items-center justify-between">
         <Link href="/">FitCore</Link>
         {session?.user ? (
-          <SignOutButton />
+          <UserInfoBox session={session} />
         ) : (
-          <Link className={buttonVariants()} href="/auth/login">
-            Войти
-          </Link>
+          <>
+            <Link className={buttonVariants()} href="/auth/login">
+              Войти
+            </Link>
+            <Link className={buttonVariants()} href="/auth/register">
+              Зарегистрироваться
+            </Link>
+          </>
         )}
       </div>
     </div>
